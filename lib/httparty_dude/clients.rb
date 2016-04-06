@@ -2,29 +2,35 @@ module HTTPartyDude
   module Clients
     class Base
       include HTTParty
+      @pre_request_processor = nil
+      @response_processor = nil
 
-      def self.delete_resource(*args)
-        path = args.first
-        options = args.last 
-        delete(path, options)
+      class << self
+        attr_accessor :pre_request_processor, :response_processor
       end
 
-      def self.get_resource(*args)
-        path = args.first
-        options = args.last 
-        get(path, options)
+      def self.delete_resource(path, options)
+        pre_request_processor.call(self, path, options) if pre_request_processor
+        r = delete(path, options)
+        response_processor.nil? ? r : response_processor.call(r) 
       end
 
-      def self.post_resource(*args)
-        path = args.first
-        options = args.last 
-        post(path, options)
+      def self.get_resource(path, options)
+        pre_request_processor.call(self, path, options) if pre_request_processor
+        r = get(path, options)
+        response_processor.nil? ? r : response_processor.call(r)         
+      end
+
+      def self.post_resource(path, options)
+        pre_request_processor.call(self, path, options) if pre_request_processor
+        r = post(path, options)
+        response_processor.nil? ? r : response_processor.call(r)         
       end      
 
-      def self.put_resource(*args)
-        path = args.first
-        options = args.last 
-        put(path, options)
+      def self.put_resource(path, options)
+        pre_request_processor.call(self, path, options) if pre_request_processor
+        r = put(path, options)
+        response_processor.nil? ? r : response_processor.call(r)         
       end            
     end
   end

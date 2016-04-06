@@ -36,6 +36,8 @@ module HTTPartyDude
       # get a reference to the newly defined class
       class_reference = Object.const_get "HTTPartyDude::Clients::#{class_name}"
       class_reference.send(:base_uri, configuration[:base_uri])
+      class_reference.pre_request_processor = configuration[:pre_request_processor]
+      class_reference.response_processor = configuration[:response_processor]
       add_endpoint_methods(class_reference, configuration[:methods])      
       class_reference
     end
