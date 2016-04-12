@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
 
 describe HTTPartyDude::ClientFactory do
-  let(:pre_request_processor) { lambda { |client, path, options| options.merge!( query: { a: '1' } ) } }
+  let(:pre_request_processor) { lambda { |client, method, path, options| options.merge!( query: { a: '1' } ) } }
   let(:response_processor) { lambda { |response| response } }
   let(:configuration) do
     {
