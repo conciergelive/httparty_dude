@@ -35,7 +35,11 @@ module HTTPartyDude
       eval("module ::HTTPartyDude::Clients; class #{class_name} < ::HTTPartyDude::Clients::Base; end; end;")
       # get a reference to the newly defined class
       class_reference = Object.const_get "HTTPartyDude::Clients::#{class_name}"
-      class_reference.send(:base_uri, configuration[:base_uri])
+      (configuration[:defaults] || {}).each do |item|
+        setting_name = item.shift
+        class_reference.send(setting_name, *item)  
+      end
+      #class_reference.send(:base_uri, configuration[:base_uri])
       class_reference.pre_request_processor = configuration[:pre_request_processor]
       class_reference.response_processor = configuration[:response_processor]
       add_endpoint_methods(class_reference, configuration[:methods])      

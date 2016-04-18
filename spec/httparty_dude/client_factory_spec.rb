@@ -8,8 +8,11 @@ describe HTTPartyDude::ClientFactory do
       class_name: 'TicketEvolution',
       pre_request_processor: pre_request_processor, 
       response_processor: response_processor,
-      base_uri: 'https://server.com/v9',
+      defaults: {
+        base_uri: 'https://server.com/v9'
+      },
       methods: { 
+        'tickets_create' => {'/ticket_groups/%{ticket_group_id}/tickets' => 'POST'},
         'ticket_groups_index' => {'/ticket_groups' => 'GET'},
         'ticket_group' => {'/ticket_groups/%{ticket_group_id}' => 'GET'}
       }
@@ -25,7 +28,7 @@ describe HTTPartyDude::ClientFactory do
       end
 
       it 'has the correct base_uri' do
-        expect(subject.base_uri).to eq(configuration[:base_uri])
+        expect(subject.base_uri).to eq(configuration[:defaults][:base_uri])
       end 
 
       it 'responds to configured endpoint methods' do
@@ -50,7 +53,7 @@ describe HTTPartyDude::ClientFactory do
        stub_http_response_with('ticket_groups.json')
        expect(response_processor).to receive(:call)
        subject.ticket_groups_index
-      end                    
+      end                  
     end  
   end
 end
